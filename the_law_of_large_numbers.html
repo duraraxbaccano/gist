@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .x.axis path {
+    display: none;
+  }
+
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js" async></script>
+  <script>
+    "use strict";
+    window.onload = function () {
+      
+      var maximunCoins = 1000000;
+      var coinRecord = []; // [ [max, n times positive], [10, 6], [20, 11], .... [1000, 667] ... ]
+
+      for (var currentMax = 10; currentMax <= maximunCoins; currentMax *= 2) {
+        var coinAccumulation = 0;
+        for (var currentRound = 0; currentRound < currentMax; currentRound++) {
+          coinAccumulation += (Math.random() / .5) & 1; // 0 is negative, and 1 is positive
+        };
+        coinRecord.push([currentMax, coinAccumulation]);
+      };
+
+      // console.log(coinRecord);
+      var margin = { top: 20, right: 20, bottom: 30, left: 150 },
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+      var svg = d3.select("#drawPanel");
+
+      var x = d3.scale.linear()
+          .range([0, width]);
+
+      var y = d3.scale.linear()
+          .range([height, 0]);
+
+      var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+      var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+      var line = d3.svg.line()
+        .x(function(d) { return d[0]; })
+        .y(function(d) { return (d[1] / d[0]) * height; });
+
+      svg.attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // set the max and min values of dataset for each x axis and y axis 
+      x.domain(d3.extent(coinRecord, function(d) { return d[0]; }));
+      y.domain([0, 1]);
+    
+      svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(" + width * .1 + "," + height * 1.03 + ")")
+        .call(xAxis)
+        .append("text")
+        .text("positive times")
+        .attr("transform", "translate(" + width + "," + height * -.05 + ")");
+
+      svg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(" + width * .1 + "," + height * .03 + ")")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("probability");
+
+      svg.append("path")
+        .datum(coinRecord)
+        .attr("class", "line")
+        .attr("d", line)
+        .attr("transform", "translate(" + width * .1 + "," + height * .03 + ")");
+    };
+  </script>
+</head>
+<body>
+  <svg id="drawPanel"></svg>
+</body>
+</html>
