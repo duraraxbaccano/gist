@@ -126,10 +126,14 @@
         .attr("class", "line")
         .attr("d", line)
         .attr("transform", "translate(" + width * .1 + "," + height * .03 + ")");
+
+      // The page needs the "loading" text because JS is running in single thread
+      document.body.removeChild( document.getElementById("loading") );
     };
   </script>
 </head>
 <body>
+  <h4 id="loading">Loading...</h4>
   <svg id="drawPanel"></svg>
 </body>
 </html>
