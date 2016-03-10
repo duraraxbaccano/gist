@@ -37,10 +37,10 @@
     "use strict";
     window.onload = function () {
       
-      var maximunCoins = 1000000;
+      var maximumCoins = 1000000;
       var coinRecord = []; // [ [max, n times positive], [10, 6], [20, 11], .... [1000, 667] ... ]
 
-      for (var currentMax = 10; currentMax <= maximunCoins; currentMax *= 2) {
+      for (var currentMax = 10; currentMax <= maximumCoins; currentMax *= 2) {
         var coinAccumulation = 0;
         for (var currentRound = 0; currentRound < currentMax; currentRound++) {
           coinAccumulation += (Math.random() / .5) & 1; // 0 is negative, and 1 is positive
@@ -69,9 +69,12 @@
         .scale(y)
         .orient("left");
 
+      var xDomain = d3.extent(coinRecord, function(d) { return d[0]; });
+
       var line = d3.svg.line()
-        .x(function(d) { return d[0]; })
+        .x(function(d) { return d[0]; }) 
         .y(function(d) { return (d[1] / d[0]) * height; });
+      // the line of d[0] looks better than "(d[0] - xDomain[0]) / (xDomain[1] - xDomain[0]) * width"
 
       svg.attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -79,7 +82,7 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // set the max and min values of dataset for each x axis and y axis 
-      x.domain(d3.extent(coinRecord, function(d) { return d[0]; }));
+      x.domain(xDomain);
       y.domain([0, 1]);
     
       svg.append("g")
@@ -99,7 +102,7 @@
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("probability");
+        .text("positive probability");
 
       svg.append("path")
         .datum(coinRecord)
