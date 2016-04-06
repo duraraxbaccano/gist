@@ -7,8 +7,18 @@ Index:
 
 2. **normal_distribution.html** - d3 line chart for the normal distribution
 
+Excluding the following files from the LICENSE of project.
+
 ***
+
 My music source comes from: 
 
 1. Epic, Bensound.com, http://www.bensound.com/royalty-free-music/track/epic
 2. Sad Day, Bensound.com,  http://www.bensound.com/royalty-free-music/track/sad-day
+
+***
+
+Image Reference:
+
+![Data Visualization](file421255110386.jpg)
+http://www.morguefile.com/archive/display/627017
