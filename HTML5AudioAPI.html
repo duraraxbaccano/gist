@@ -12,35 +12,21 @@
   <meta property="og:url" content="http://duraraxbaccano.github.io/gist/HTML5AudioAPI.html" />
   <meta property="og:image" content="http://duraraxbaccano.github.io/gist/file421255110386.jpg" />
   <title>The example of HTML5 Audio API</title>
-  <style>
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  .x.axis path {
-    display: none;
-  }
-
-  .line {
-    fill: none;
-    stroke: steelblue;
-    stroke-width: 1.5px;
-  }
-
-  </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js" async></script>
   <script>
-    "use strict";
+    "use strict";    
     window.onload = function () {
       // initial canvas
       var canvas = document.getElementById('drawCanvas');
       var canvasCtx = canvas.getContext('2d');
       var WIDTH = canvas.width;
       var HEIGHT = canvas.height;
+
+      // shape style
+      canvasCtx.fillStyle = 'rgb(255, 255, 255)';
+      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+      canvasCtx.lineWidth = 2;
+      canvasCtx.strokeStyle = 'steelblue';
+
       // request frame
       var drawVisual;
 
@@ -62,20 +48,14 @@
       source.connect(audioCtx.destination);
       // extract data
       analyser.getByteTimeDomainData(dataArray);
-      // analyser.getByteFrequencyData(dataArray);
 
       function draw() {
         // repeat drawing by the browser
         drawVisual = requestAnimationFrame(draw);
 
         analyser.getByteTimeDomainData(dataArray);
-        // analyser.getByteFrequencyData(dataArray);
-
-        // shape style
-        canvasCtx.fillStyle = 'rgb(255, 255, 255)';
+        // clear the previous shape
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = 'steelblue';
 
         canvasCtx.beginPath();
 
@@ -106,10 +86,11 @@
   </script>
 </head>
 <body>
-  <audio id="audioSource" src="bensound-epic.mp3" type="audio/mpeg" controls>
-    Your browser does not support the audio element.
-  </audio>
+  <div>
+    <audio id="audioSource" src="bensound-epic.mp3" type="audio/mpeg" controls>
+      Your browser does not support the audio element.
+    </audio>    
+  </div>
   <canvas id="drawCanvas" width="800px" height="600px"></canvas>
-  <svg id="drawPanel"></svg>
 </body>
 </html>

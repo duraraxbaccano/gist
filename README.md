@@ -7,6 +7,8 @@ Index:
 
 2. **normal_distribution.html** - d3 line chart for the normal distribution
 
+3. **St_Petersburg_Paradox.html** - St.Petersburg Paradox game emulation to find the expectations  
+
 Excluding the following files from the LICENSE of project.
 
 ***
