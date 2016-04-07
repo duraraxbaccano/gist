@@ -9,6 +9,8 @@ Index:
 
 3. **St_Petersburg_Paradox.html** - St.Petersburg Paradox game emulation to find the expectations  
 
+4. **HTML5AudioAPI.html** - Simple audio visualization demo with HTML5 audio API and canvas
+  
 Excluding the following files from the LICENSE of project.
 
 ***
