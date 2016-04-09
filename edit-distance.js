@@ -106,7 +106,7 @@ function editDistance(str1, str2) {
 if (typeof module !== "undefined") {
   module.exports = function() { 
     this.editDistance = editDistance;
-  }
+  };
 }
 
 
