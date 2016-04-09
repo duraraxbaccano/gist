@@ -102,4 +102,11 @@ function editDistance(str1, str2) {
   }
 }
 
+// export function if node.js existing
+if (typeof module !== "undefined") {
+  module.exports = function() { 
+    this.editDistance = editDistance;
+  }
+}
+
 
