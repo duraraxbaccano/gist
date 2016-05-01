@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>YAN TING LIN's Work</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta property="og:title" content="Three JS practice by YAN TING LIN" />
+    <meta name="description" content="YAN TING LIN three tween js webgl 3d css3d renderer periodictable demo instagram sphere table helix grid" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2016-05-01T21:00:00.000Z" />
+    <meta property="article:modified_time" content="" />
+    <meta property="article:author" content="YAN TING LIN" />
+    <meta property="article:section" content="Three JS API" />
+    <meta property="article:tag" content="Three JS API Test" />
+    <meta property="og:url" content="http://duraraxbaccano.github.io/gist/instagram/index.html" />
+    <meta property="og:image" content="http://duraraxbaccano.github.io/gist/instagram/thumbnail.png" />
+    <style>
+      /*
+        color reference: https://www.google.com/design/spec/style/color.html
+        Light theme
+        1. Status bar: #E0E0E0;
+        2. App bar: #F5F5F5;
+        3. Background: #FAFAFA;
+        4. Cards/Dialogs: #FFFFFF;
+      */
+      html, body {
+        height: 100%;
+      }
+
+      body {
+        background-color: #E0E0E0;
+        margin: 0;
+        font-family: Helvetica, sans-serif;;
+        overflow: hidden;
+      }
+
+      a {
+        color: #000000;
+      }
+
+      #info {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        color: #000000;
+        padding: 5px;
+        font-family: Monospace;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+        z-index: 1;
+      }
+
+      #menu {
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .element {
+        width: 360px;
+        height: 480px;
+        /*box-shadow: 0px 0px 12px rgba(0,0,250,0.5);*/
+        border: 1px solid rgba(0,0,255,0.25);
+        text-align: center;
+        cursor: default;
+      }
+
+      .element:hover {
+        /*box-shadow: 0px 0px 12px rgba(0,0,250,1);*/
+        border: 1px solid rgba(0,0,255,1);
+      }
+
+      .element .number {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 12px;
+        color: rgba(0,0,0,0.75);
+      }
+
+      .element .symbol {
+        position: absolute;
+        top: 40px;
+        left: 0px;
+        right: 0px;
+        font-size: 60px;
+        font-weight: bold;
+        color: rgba(0,0,0,0.75);
+        /*text-shadow: 0 0 10px rgba(0,255,255,0.95);*/
+      }
+
+      .element .details {
+        position: absolute;
+        bottom: 15px;
+        left: 0px;
+        right: 0px;
+        font-size: 12px;
+        color: rgba(0,0,0,0.75);
+      }
+
+      button {
+        color: rgba(0,0,0,0.75);
+        background: transparent;
+        outline: 1px solid rgba(0,0,255,0.75);
+        border: 0px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: rgba(255,255,255,0.5);
+      }
+
+      button:active {
+        color: #000000;
+        background-color: rgba(255,255,255,0.75);
+      }
+    </style>
+  </head>
+  <body>
+    <script src="build/three.js"></script>
+    <script src="threejs/js/libs/tween.min.js"></script>
+    <script src="threejs/js/controls/TrackballControls.js"></script>
+    <script src="threejs/js/renderers/CSS3DRenderer.js"></script>
+
+    <div id="container"></div>
+    <div id="menu">
+      <button id="table">TABLE</button>
+      <button id="sphere">SPHERE</button>
+      <button id="helix">HELIX</button>
+      <button id="grid">GRID</button>
+    </div>
+    <script>
+      var dataset = [];
+      var request = new XMLHttpRequest();
+      request.open('GET', 'kyoto.json', true);
+
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Success!
+          var data = JSON.parse(request.responseText);
+          for (var i = 0; i < data.length; i++) {
+            dataset[i] = JSON.parse(data[i]["res"]);
+          }
+          console.log(dataset);
+          main(dataset);
+        } else {
+          // We reached our target server, but it returned an error
+          console.log("Initial Request Failing");
+        }
+      };
+
+      request.onerror = function() {
+        // There was a connection error of some sort
+        console.log("Initial Request Error");
+      };
+
+      request.send();
+
+      function main(objs) {
+
+        var tableEx = [
+          "H", "Hydrogen", "1.00794", 1, 1,
+          "He", "Helium", "4.002602", 18, 1,
+          "Li", "Lithium", "6.941", 1, 2,
+          "Be", "Beryllium", "9.012182", 2, 2,
+          "B", "Boron", "10.811", 13, 2,
+          "C", "Carbon", "12.0107", 14, 2,
+          "N", "Nitrogen", "14.0067", 15, 2,
+          "O", "Oxygen", "15.9994", 16, 2,
+          "F", "Fluorine", "18.9984032", 17, 2
+        ];
+
+        var table = [];
+        for (var i = 0; i < objs.length; i++) {
+          var offset = i * 6, row = i / 10 + 1, col = i % 10;
+          table[offset] = objs[i]["images"]["low_resolution"]["url"];
+          table[offset + 1] = objs[i]["user"]["username"];
+          table[offset + 2] = objs[i]["caption"]["text"];
+          table[offset + 3] = col;
+          table[offset + 4] = row;
+          table[offset + 5] = objs[i]["link"];
+        }
+
+        var camera, scene, renderer;
+        var controls;
+
+        var objects = [];
+        var targets = { table: [], sphere: [], helix: [], grid: [] };
+
+        init();
+        animate();
+
+        function init() {
+
+          camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+          camera.position.z = 3000;
+
+          scene = new THREE.Scene();
+
+          var width = window.screen.width;
+          var height = window.screen.height;
+          // table
+
+          for ( var i = 0; i < table.length; i += 6 ) {
+
+            var element = document.createElement('div');
+            element.className = 'element';
+            element.style.backgroundColor = 'rgba(250,250,250,' + 0.75 + ')';
+
+            var number = document.createElement('div');
+            number.className = 'number';
+            number.textContent = i / 6 + 1;
+            element.appendChild( number );
+
+            var symbol = document.createElement('a');
+            symbol.className = 'symbol';
+            symbol.href = table[i + 5];
+            var image = document.createElement("img");
+            image.src = table[i];
+            image.width = 320;
+            image.height = 320;
+            image.alt = "unknown";
+            symbol.appendChild(image);
+            symbol.target = "_blank";
+            element.appendChild(symbol);
+
+            var details = document.createElement('div');
+            details.className = 'details';
+            details.innerHTML = table[i + 1] + '<br>' + table[i + 2];
+            element.appendChild(details);
+
+            var object = new THREE.CSS3DObject( element );
+            object.position.x = Math.random() * 4000 - 2000;
+            object.position.y = Math.random() * 4000 - 2000;
+            object.position.z = Math.random() * 4000 - 2000;
+            scene.add(object);
+
+            objects.push(object);
+
+            //
+
+            var object = new THREE.Object3D();
+            object.position.x = ( table[i + 3] * 380 ) - width;
+            object.position.y = - ( table[i + 4] * 500 ) + (height * 2);
+
+            targets.table.push( object );
+
+          }
+
+          var radius = height;
+          // sphere
+          var vector = new THREE.Vector3();
+
+          for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+            var phi = Math.acos( -1 + ( 2 * i ) / l );
+            var theta = Math.sqrt( l * Math.PI ) * phi;
+
+            var object = new THREE.Object3D();
+
+            object.position.x = radius * Math.cos( theta ) * Math.sin( phi );
+            object.position.y = radius * Math.sin( theta ) * Math.sin( phi );
+            object.position.z = radius * Math.cos( phi );
+
+            vector.copy( object.position ).multiplyScalar( 2 );
+
+            object.lookAt( vector );
+
+            targets.sphere.push( object );
+
+          }
+
+          var helixRadius = width;
+          var helixHeight = width / 2;
+          // helix
+          var vector = new THREE.Vector3();
+
+          for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+            var phi = i * 0.35 + Math.PI;
+
+            var object = new THREE.Object3D();
+
+            object.position.x = helixRadius * Math.sin( phi );
+            object.position.y = - ( i * 32 ) + helixHeight;
+            object.position.z = helixRadius * Math.cos( phi );
+
+            vector.x = object.position.x * 2;
+            vector.y = object.position.y;
+            vector.z = object.position.z * 2;
+
+            object.lookAt( vector );
+
+            targets.helix.push( object );
+
+          }
+
+
+          // grid
+
+          for ( var i = 0; i < objects.length; i++ ) {
+
+            var object = new THREE.Object3D();
+
+            object.position.x = ( ( i % 5 ) * 400 ) - 800;
+            object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 600 ) + 800;
+            object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
+
+            targets.grid.push( object );
+
+          }
+
+          //
+
+          renderer = new THREE.CSS3DRenderer();
+          renderer.setSize( window.innerWidth, window.innerHeight );
+          renderer.domElement.style.position = 'absolute';
+          document.getElementById( 'container' ).appendChild( renderer.domElement );
+
+          //
+
+          controls = new THREE.TrackballControls( camera, renderer.domElement );
+          controls.rotateSpeed = 0.5;
+          controls.minDistance = 500;
+          controls.maxDistance = 6000;
+          controls.addEventListener( 'change', render );
+
+          var button = document.getElementById( 'table' );
+          button.addEventListener( 'click', function ( event ) {
+
+            transform( targets.table, 2000 );
+
+          }, false );
+
+          var button = document.getElementById( 'sphere' );
+          button.addEventListener( 'click', function ( event ) {
+
+            transform( targets.sphere, 2000 );
+
+          }, false );
+
+          var button = document.getElementById( 'helix' );
+          button.addEventListener( 'click', function ( event ) {
+
+            transform( targets.helix, 2000 );
+
+          }, false );
+
+          var button = document.getElementById( 'grid' );
+          button.addEventListener( 'click', function ( event ) {
+
+            transform( targets.grid, 2000 );
+
+          }, false );
+
+          transform( targets.table, 2000 );
+
+          //
+
+          window.addEventListener( 'resize', onWindowResize, false );
+
+        }
+
+        function transform( targets, duration ) {
+
+          TWEEN.removeAll();
+
+          for ( var i = 0; i < objects.length; i ++ ) {
+
+            var object = objects[ i ];
+            var target = targets[ i ];
+
+            new TWEEN.Tween( object.position )
+              .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+              .easing( TWEEN.Easing.Exponential.InOut )
+              .start();
+
+            new TWEEN.Tween( object.rotation )
+              .to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+              .easing( TWEEN.Easing.Exponential.InOut )
+              .start();
+
+          }
+
+          new TWEEN.Tween( this )
+            .to( {}, duration * 2 )
+            .onUpdate( render )
+            .start();
+
+        }
+
+        function onWindowResize() {
+
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+
+          renderer.setSize( window.innerWidth, window.innerHeight );
+
+          render();
+
+        }
+
+        function animate() {
+
+          requestAnimationFrame( animate );
+
+          TWEEN.update();
+
+          controls.update();
+
+        }
+
+        function render() {
+
+          renderer.render( scene, camera );
+
+        }
+
+      }
+    </script>
+    <div id="info">
+      Special thank and fork from: <br> 
+      <a href="http://threejs.org" target="_blank">three.js css3d</a> - periodic table. 
+      <a href="https://plus.google.com/113862800338869870683/posts/QcFk5HrWran" target="_blank">info</a>.
+    </div>
+  </body>
+</html>
