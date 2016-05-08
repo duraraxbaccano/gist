@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Triangle Fractal implemented in JS</title>
+</head>
+<script>
+  window.onload = function () {
+    var canvas = document.getElementById('drawCanvas');
+    var ctx = canvas.getContext('2d');
+    ctx.strokeStyle="#00FFFF";
+    // check support canvas
+    if (canvas.getContext) {
+
+    } else {
+
+    }
+    // original triangle (the biggest one)
+    var points3 = [ [400, 120], [220, 375], [580, 375] ];
+    // assign recursive layer
+    var layers = 5;
+    drawTriangle(points3, layers);
+
+    function drawTriangle(points, layer) {
+      if (points.length < 3 || layer < 0) {
+        return;
+      } else {
+
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(points[0][0],points[0][1]);
+      ctx.lineTo(points[1][0],points[1][1]);
+      ctx.lineTo(points[2][0],points[2][1]);
+      ctx.lineTo(points[0][0],points[0][1]);
+      ctx.stroke();
+      // middle 3 points
+      var middleLeft = [(points[0][0] + points[1][0]) / 2, (points[0][1] + points[1][1]) / 2];
+      var middleRight = [(points[0][0] + points[2][0]) / 2, (points[0][1] + points[2][1]) / 2];
+      var middleBottom = [points[0][0], points[1][1]];
+      // top triangle
+      var topPoints = [ 
+        points[0], 
+        middleLeft,
+        middleRight,
+      ];
+      // left triangle
+      var leftPoints = [ 
+        middleLeft,
+        points[1],
+        middleBottom
+      ];
+      // right triangle
+      var rightPoints = [ 
+        middleRight,
+        middleBottom,
+        points[2]
+      ];
+      drawTriangle(topPoints, layer - 1);
+      drawTriangle(leftPoints, layer - 1);
+      drawTriangle(rightPoints, layer - 1);
+    }
+  };
+</script>
+<body>
+  <h1>Triangle Fractal implemented in JS</h1>
+  <canvas id="drawCanvas" width="800px" height="600px"></canvas>
+</body>
+</html>
