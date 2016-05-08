@@ -3,12 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>Triangle Fractal implemented in JS</title>
+  <meta charset="UTF-8">
+  <meta property="og:title" content="Codes for sharing world." />
+  <meta property="og:type" content="article" />
+  <meta property="article:published_time" content="2016-05-08T21:00:00.000Z" />
+  <meta property="article:modified_time" content="" />
+  <meta property="article:author" content="YAN TING LIN" />
+  <meta property="article:section" content="Triangle Fractal" />
+  <meta property="article:tag" content="Triangle Fractal implemented in JS" />
+  <meta name="description" content="YAN TING LIN Triangle Fractal implemented in JS Canvas" />
+  <meta property="og:url" content="http://duraraxbaccano.github.io/gist/triangle" />
+  <meta property="og:image" content="http://duraraxbaccano.github.io/gist/triangle/triangle.png" />
+  <meta property="image" content="http://duraraxbaccano.github.io/gist/triangle/triangle.png" />
 </head>
 <script>
   window.onload = function () {
     var canvas = document.getElementById('drawCanvas');
     var ctx = canvas.getContext('2d');
-    ctx.strokeStyle="#00FFFF";
+    // the color of triangle
+    ctx.strokeStyle="#0000FF";
     // check support canvas
     if (canvas.getContext) {
 
@@ -18,7 +31,7 @@
     // original triangle (the biggest one)
     var points3 = [ [400, 120], [220, 375], [580, 375] ];
     // assign recursive layer
-    var layers = 5;
+    var layers = 6;
     drawTriangle(points3, layers);
 
     function drawTriangle(points, layer) {
